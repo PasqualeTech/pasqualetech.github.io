@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>pastech — guide tech</title>
+<title>PasTech — Cloud Native & Cybersecurity Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
@@ -30,31 +30,36 @@
     color: var(--text);
     font-family: var(--sans);
     overflow-x: hidden;
-    cursor: none;
   }
 
-  /* Custom cursor */
-  .cursor {
-    width: 12px; height: 12px;
-    background: var(--accent);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform .1s, width .2s, height .2s;
+  /* Custom cursor wrapper to avoid locking interface */
+  @media (min-width: 769px) {
+    body.custom-cursor-active { cursor: none; }
+    body.custom-cursor-active a, body.custom-cursor-active button, body.custom-cursor-active .topic-card { cursor: none; }
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform .1s, width .2s, height .2s;
+      display: none;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,255,136,.35);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform .15s ease, opacity .3s;
+      display: none;
+    }
+    body.custom-cursor-active .cursor, body.custom-cursor-active .cursor-ring { display: block; }
   }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 1px solid rgba(0,255,136,.35);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: transform .15s ease, opacity .3s;
-  }
-  a:hover ~ .cursor, button:hover ~ .cursor { width: 20px; height: 20px; }
 
   /* Grid noise overlay */
   body::before {
@@ -136,7 +141,7 @@
     font-family: var(--mono);
     font-size: .9rem;
     color: var(--muted);
-    max-width: 480px;
+    max-width: 580px;
     line-height: 1.7;
     margin-bottom: 3rem;
   }
@@ -153,7 +158,6 @@
     color: var(--accent);
     background: transparent;
     text-decoration: none;
-    cursor: none;
     transition: background .2s, color .2s;
   }
   .btn:hover { background: var(--accent); color: var(--bg); }
@@ -306,7 +310,6 @@
   .topic-card {
     background: var(--surface);
     padding: 2rem;
-    cursor: none;
     transition: background .2s;
     position: relative;
     overflow: hidden;
@@ -359,7 +362,6 @@
     border: 1px solid var(--border);
     background: transparent;
     color: var(--muted);
-    cursor: none;
     letter-spacing: .1em;
     text-transform: uppercase;
     transition: all .2s;
@@ -384,7 +386,6 @@
   }
   .guide-table tbody tr {
     border-bottom: 1px solid var(--border);
-    cursor: none;
     transition: background .15s;
   }
   .guide-table tbody tr:hover { background: var(--surface); }
@@ -392,6 +393,12 @@
     padding: 1rem 0;
     font-family: var(--mono);
     font-size: .82rem;
+  }
+  .guide-table td a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    width: 100%;
   }
   .guide-table td:first-child { color: var(--text); }
   .guide-table td:not(:first-child) { color: var(--muted); }
@@ -404,7 +411,6 @@
     border: 1px solid;
     letter-spacing: .05em;
     text-transform: uppercase;
-    margin-left: .5rem;
   }
   .tag-green { border-color: var(--accent); color: var(--accent); }
   .tag-blue { border-color: var(--accent2); color: var(--accent2); }
@@ -426,7 +432,6 @@
     position: relative;
     overflow: hidden;
     transition: border-color .2s;
-    cursor: none;
   }
   .social-card:hover { border-color: var(--accent); }
   .social-card:hover .social-arrow { transform: translate(4px,-4px); }
@@ -495,7 +500,6 @@
     color: var(--accent2);
     background: transparent;
     text-decoration: none;
-    cursor: none;
     white-space: nowrap;
     transition: background .2s, color .2s;
     flex-shrink: 0;
@@ -569,7 +573,6 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- Nav -->
 <nav>
   <a class="logo" href="#"><span>_</span>pastech</a>
   <ul class="nav-links">
@@ -580,29 +583,28 @@
   </ul>
 </nav>
 
-<!-- Hero -->
 <section class="hero" id="home">
-  <div class="hero-tag">init pastech.dev</div>
+  <div class="hero-tag">init pastech.io</div>
   <h1>
     tech<br>
     <span class="line2">senza</span><br>
     <span class="accent-word">filtri<span class="caret"></span></span>
   </h1>
   <p class="hero-desc">
-    Guide pratiche su <span class="hl">Linux</span>, <span class="hl">cybersecurity</span>,
-    <span class="hl">AI</span>, <span class="hl">cloud</span> e <span class="hl">dev</span>.
-    Contenuti diretti, senza fronzoli.
+    Documentazione e laboratori pratici focalizzati su <span class="hl">Cybersecurity</span>, 
+    <span class="hl">Cloud Native</span>, <span class="hl">Networking</span> e <span class="hl">Automazione</span>. 
+    Niente teoria ridondante, solo implementazioni reali.
   </p>
   <div class="cta-row">
     <a class="btn" href="#guide">sfoglia le guide</a>
-    <a class="btn btn-ghost" href="#social">seguimi</a>
+    <a class="btn btn-ghost" href="#social">network</a>
   </div>
 
   <div class="social-strip">
     <a href="https://instagram.com/_pastech_" target="_blank">instagram</a>
     <a href="https://tiktok.com/@_pastech_" target="_blank">tiktok</a>
-    <a href="https://youtube.com" target="_blank">youtube</a>
-    <a href="https://linkedin.com" target="_blank">linkedin</a>
+    <a href="https://youtube.com/@pastech" target="_blank">youtube</a>
+    <a href="https://linkedin.com/in/pastech" target="_blank">linkedin</a>
   </div>
 
   <div class="scroll-hint">
@@ -611,33 +613,27 @@
   </div>
 </section>
 
-<!-- About -->
 <section id="about">
-  <div class="section-label">chi sono</div>
-  <h2>pastech</h2>
+  <div class="section-label">profile</div>
+  <h2>pasquale</h2>
   <div class="about-grid">
     <div class="about-text">
       <p>
-        Creo contenuti tech su <strong>Instagram, TikTok, YouTube e LinkedIn</strong>
-        con l'obiettivo di rendere accessibili argomenti complessi.<br><br>
-        Dalla configurazione di un server Linux alla comprensione dei
-        fondamenti della cybersecurity, passando per automazioni con
-        <strong>AI</strong> e architetture <strong>cloud/networking</strong>.<br><br>
-        Questo sito raccoglie tutte le guide scritte nel tempo —
-        una base di conoscenza aperta e sempre aggiornata.
+        Attualmente specializzando in ambito <strong>Cloud Native &amp; Cybersecurity Specialist</strong> presso l'ITS. Sviluppo e gestisco il progetto di divulgazione tecnica <strong>PasTech</strong> su Instagram, TikTok, YouTube e LinkedIn.<br><br>
+        Questo ecosistema funge da portfolio architetturale e da base di conoscenza aperta: qui documento laboratori pratici, file di configurazione e analisi delle minacce, traducendo architetture complesse in blueprint lineari e pronti al deployment.
       </p>
     </div>
     <div>
-      <p style="font-family: var(--mono); font-size: .7rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem;">stack &amp; argomenti</p>
+      <p style="font-family: var(--mono); font-size: .7rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem;">core stack &amp; competence</p>
       <div class="stack-grid">
-        <div class="stack-item"><span class="stack-dot dot-green"></span>Linux / bash</div>
-        <div class="stack-item"><span class="stack-dot dot-red"></span>cybersecurity</div>
-        <div class="stack-item"><span class="stack-dot dot-blue"></span>cloud / networking</div>
-        <div class="stack-item"><span class="stack-dot dot-green"></span>AI / automazione</div>
-        <div class="stack-item"><span class="stack-dot dot-blue"></span>programmazione</div>
-        <div class="stack-item"><span class="stack-dot dot-red"></span>CTF / hacking etico</div>
-        <div class="stack-item"><span class="stack-dot dot-green"></span>Docker / DevOps</div>
-        <div class="stack-item"><span class="stack-dot dot-blue"></span>Python / scripting</div>
+        <div class="stack-item"><span class="stack-dot dot-green"></span>Linux / Bash Scripting</div>
+        <div class="stack-item"><span class="stack-dot dot-red"></span>Ethical Hacking &amp; Hardening</div>
+        <div class="stack-item"><span class="stack-dot dot-blue"></span>Advanced Networking</div>
+        <div class="stack-item"><span class="stack-dot dot-green"></span>Cloud Application Delivery</div>
+        <div class="stack-item"><span class="stack-dot dot-blue"></span>Docker &amp; Containerization</div>
+        <div class="stack-item"><span class="stack-dot dot-red"></span>Traffic Analysis / Wireshark</div>
+        <div class="stack-item"><span class="stack-dot dot-green"></span>Python Automation / Scripting</div>
+        <div class="stack-item"><span class="stack-dot dot-blue"></span>AI APIs &amp; Local LLMs Setup</div>
       </div>
     </div>
   </div>
@@ -645,64 +641,62 @@
 
 <div class="divider"></div>
 
-<!-- Topic cards -->
 <section id="guide">
   <div class="topics-header">
     <div>
-      <div class="section-label">argomenti</div>
-      <h2>le categorie</h2>
+      <div class="section-label">knowledge base</div>
+      <h2>repository categorie</h2>
     </div>
-    <p class="topics-desc">Scegli una categoria per filtrare le guide qui sotto.</p>
+    <p class="topics-desc">Filtra la tavola dei contenuti archiviati selezionando una macro-area.</p>
   </div>
   <div class="topics-grid">
-    <div class="topic-card" onclick="filterGuide('linux')">
+    <div class="topic-card" onclick="filterGuide('linux')" style="cursor:pointer;">
       <div class="topic-icon">🐧</div>
-      <div class="topic-title">Linux & bash</div>
-      <div class="topic-desc">Comandi essenziali, scripting, gestione sistemi, configurazione server.</div>
-      <div class="topic-count">// 8 guide</div>
+      <div class="topic-title">Linux &amp; Bash</div>
+      <div class="topic-desc">Amministrazione di sistema, automazione in Bash, ottimizzazione e hardening del kernel.</div>
+      <div class="topic-count" id="count-linux">// 0 guide</div>
     </div>
-    <div class="topic-card" onclick="filterGuide('sec')">
+    <div class="topic-card" onclick="filterGuide('security')" style="cursor:pointer;">
       <div class="topic-icon">🔐</div>
       <div class="topic-title">Cybersecurity</div>
-      <div class="topic-desc">Hacking etico, CTF writeup, penetration testing, OSINT, strumenti difensivi.</div>
-      <div class="topic-count">// 6 guide</div>
+      <div class="topic-desc">Metodologie offensive, protocolli crittografici, auditing di sicurezza e OSINT passivo.</div>
+      <div class="topic-count" id="count-security">// 0 guide</div>
     </div>
-    <div class="topic-card" onclick="filterGuide('ai')">
+    <div class="topic-card" onclick="filterGuide('ai')" style="cursor:pointer;">
       <div class="topic-icon">🤖</div>
-      <div class="topic-title">AI & automazione</div>
-      <div class="topic-desc">LLM, prompt engineering, script di automazione, workflow con AI.</div>
-      <div class="topic-count">// 5 guide</div>
+      <div class="topic-title">AI &amp; Automation</div>
+      <div class="topic-desc">Integrazione di modelli linguistici avanzati, Prompt Engineering e orchestrazione pipeline.</div>
+      <div class="topic-count" id="count-ai">// 0 guide</div>
     </div>
-    <div class="topic-card" onclick="filterGuide('cloud')">
+    <div class="topic-card" onclick="filterGuide('cloud')" style="cursor:pointer;">
       <div class="topic-icon">☁️</div>
-      <div class="topic-title">Cloud & networking</div>
-      <div class="topic-desc">AWS, VPN, firewall, reti, DNS, infrastruttura as code.</div>
-      <div class="topic-count">// 4 guide</div>
+      <div class="topic-title">Cloud &amp; Networking</div>
+      <div class="topic-desc">Infrastrutture di rete enterprise, routing simmetrico, VPN tunnel e servizi cloud core.</div>
+      <div class="topic-count" id="count-cloud">// 0 guide</div>
     </div>
-    <div class="topic-card" onclick="filterGuide('dev')">
+    <div class="topic-card" onclick="filterGuide('dev')" style="cursor:pointer;">
       <div class="topic-icon">💻</div>
-      <div class="topic-title">Programmazione</div>
-      <div class="topic-desc">Python, Git, Docker, API, best practice di sviluppo.</div>
-      <div class="topic-count">// 7 guide</div>
+      <div class="topic-title">Development</div>
+      <div class="topic-desc">Programmazione in Python, containerizzazione Docker, versionamento Git e architetture API.</div>
+      <div class="topic-count" id="count-dev">// 0 guide</div>
     </div>
-    <div class="topic-card" onclick="filterGuide('all')">
+    <div class="topic-card" onclick="filterGuide('all')" style="cursor:pointer;">
       <div class="topic-icon">⚡</div>
-      <div class="topic-title">Tutte le guide</div>
-      <div class="topic-desc">Visualizza l'intera raccolta senza filtri.</div>
-      <div class="topic-count">// 30 guide</div>
+      <div class="topic-title">Tutti i Documenti</div>
+      <div class="topic-desc">Visualizza l'indice globale dei laboratori e dei file di configurazione archiviati.</div>
+      <div class="topic-count" id="count-all">// 0 guide</div>
     </div>
   </div>
 </section>
 
-<!-- Guide list -->
 <section id="guide-list">
-  <div class="section-label">archivio</div>
-  <h2>guide</h2>
+  <div class="section-label">index</div>
+  <h2>tabella delle guide</h2>
   <div style="margin-top: 2rem;">
     <div class="guide-filter">
       <button class="filter-btn active" onclick="filterGuide('all',this)">Tutto</button>
       <button class="filter-btn" onclick="filterGuide('linux',this)">Linux</button>
-      <button class="filter-btn" onclick="filterGuide('sec',this)">Security</button>
+      <button class="filter-btn" onclick="filterGuide('security',this)">Security</button>
       <button class="filter-btn" onclick="filterGuide('ai',this)">AI</button>
       <button class="filter-btn" onclick="filterGuide('cloud',this)">Cloud</button>
       <button class="filter-btn" onclick="filterGuide('dev',this)">Dev</button>
@@ -710,125 +704,169 @@
     <table class="guide-table">
       <thead>
         <tr>
-          <th>titolo</th>
-          <th style="width:120px">categoria</th>
-          <th style="width:120px">livello</th>
-          <th style="width:100px">data</th>
+          <th>Titolo Documento</th>
+          <th style="width:140px">Categoria</th>
+          <th style="width:140px">Livello</th>
+          <th style="width:100px; text-align: right;">Data</th>
         </tr>
       </thead>
       <tbody id="guideBody">
-        <!-- JS populated -->
-      </tbody>
+        </tbody>
     </table>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- Social & Telegram -->
 <section id="social">
-  <div class="section-label">canali</div>
-  <h2>seguimi</h2>
+  <div class="section-label">communication</div>
+  <h2>network officiali</h2>
   <div class="socials-grid">
     <a class="social-card" href="https://instagram.com/_pastech_" target="_blank">
       <span class="social-arrow">↗</span>
       <div class="social-name">Instagram</div>
       <div class="social-handle">@_pastech_</div>
-      <div class="social-desc">Reel tecnici brevi, tips, concept spiegati in 60 secondi.</div>
+      <div class="social-desc">Concetti tecnici, pillole di sicurezza e aggiornamenti rapidi sul mondo IT.</div>
       <div class="social-platform-tag">instagram</div>
     </a>
     <a class="social-card" href="https://tiktok.com/@_pastech_" target="_blank">
       <span class="social-arrow">↗</span>
       <div class="social-name">TikTok</div>
       <div class="social-handle">@_pastech_</div>
-      <div class="social-desc">Format veloci, tendenze tech, challenge e curiosità informatiche.</div>
+      <div class="social-desc">Format verticali veloci, analisi di macro-trend e troubleshooting in pillole.</div>
       <div class="social-platform-tag">tiktok</div>
     </a>
-    <a class="social-card" href="https://youtube.com" target="_blank">
+    <a class="social-card" href="https://youtube.com/@pastech" target="_blank">
       <span class="social-arrow">↗</span>
       <div class="social-name">YouTube</div>
       <div class="social-handle">pastech</div>
-      <div class="social-desc">Tutorial completi, walkthrough CTF, video approfonditi.</div>
+      <div class="social-desc">Laboratori approfonditi, analisi del traffico e guide di configurazione passo-passo.</div>
       <div class="social-platform-tag">youtube</div>
     </a>
-    <a class="social-card" href="https://linkedin.com" target="_blank">
+    <a class="social-card" href="https://linkedin.com/in/pastech" target="_blank">
       <span class="social-arrow">↗</span>
       <div class="social-name">LinkedIn</div>
-      <div class="social-handle">pastech</div>
-      <div class="social-desc">Riflessioni sul mondo tech, carriera IT, trend del settore.</div>
+      <div class="social-handle">Pasquale (PasTech)</div>
+      <div class="social-desc">Analisi di scenario aziendali, networking professionale e aggiornamenti accademici.</div>
       <div class="social-platform-tag">linkedin</div>
     </a>
   </div>
 
   <div class="tg-cta">
     <div class="tg-text">
-      <h3>Bot Telegram 🤖</h3>
-      <p>Sfoglia tutte le guide direttamente su Telegram.<br>Cerca per categoria, livello o parola chiave.</p>
+      <h3>Automated Terminal Bot 🤖</h3>
+      <p>Interroga e consulta l'intero database delle guide in tempo reale tramite interfaccia Telegram.</p>
     </div>
-    <a class="btn-tg" href="https://t.me/pastech_bot" target="_blank">apri il bot →</a>
+    <a class="btn-tg" href="https://t.me/pastech_bot" target="_blank">Inizializza Bot →</a>
   </div>
 </section>
 
-<!-- Footer -->
 <footer>
   <a class="logo" href="#"><span>_</span>pastech</a>
-  <p>© 2025 pastech — built with GitHub Pages</p>
+  <p>© 2026 pastech — Open Source Engineering Docs</p>
   <p style="font-family: var(--mono); font-size: .7rem; color: var(--muted);">
-    <a href="https://github.com/pastech" target="_blank" style="color: var(--muted); text-decoration: none; transition: color .2s;" onmouseover="this.style.color='#00ff88'" onmouseout="this.style.color='var(--muted)'">github</a>
+    <a href="https://github.com/PasqualeTech" target="_blank" style="color: var(--muted); text-decoration: none; transition: color .2s;">github</a>
   </p>
 </footer>
 
 <script>
-  // Cursor
+  // Advanced Dynamic Cursor Management
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
   let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-  function animCursor() {
-    cursor.style.left = mx + 'px';
-    cursor.style.top  = my + 'px';
-    rx += (mx - rx) * .12;
-    ry += (my - ry) * .12;
-    ring.style.left = rx + 'px';
-    ring.style.top  = ry + 'px';
-    requestAnimationFrame(animCursor);
-  }
-  animCursor();
+  let isHovering = false;
 
-  // Guide data
+  if (window.innerWidth > 768) {
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+      if (!document.body.classList.contains('custom-cursor-active')) {
+        document.body.classList.add('custom-cursor-active');
+      }
+    });
+
+    document.addEventListener('mouseleave', () => {
+      document.body.classList.remove('custom-cursor-active');
+    });
+
+    // Handle interactive triggers cleanly
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest('a') || e.target.closest('button') || e.target.closest('.topic-card')) {
+        cursor.style.width = '20px';
+        cursor.style.height = '20px';
+        cursor.style.background = 'transparent';
+        cursor.style.border = '2px solid var(--accent)';
+      }
+    });
+
+    document.addEventListener('mouseout', e => {
+      if (e.target.closest('a') || e.target.closest('button') || e.target.closest('.topic-card')) {
+        cursor.style.width = '12px';
+        cursor.style.height = '12px';
+        cursor.style.background = 'var(--accent)';
+        cursor.style.border = 'none';
+      }
+    });
+
+    function animCursor() {
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
+      rx += (mx - rx) * .12;
+      ry += (my - ry) * .12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+  }
+
+  // Unified Central Knowledge Base Dataset
   const guides = [
-    { title: "Guida completa a Bash scripting", cat: "linux", level: "intermedio", date: "2025-05" },
-    { title: "Come configurare un firewall con iptables", cat: "linux", level: "avanzato", date: "2025-04" },
-    { title: "Cron job: automazione su Linux", cat: "linux", level: "base", date: "2025-03" },
-    { title: "SSH hardening: guida pratica", cat: "linux", level: "intermedio", date: "2025-02" },
-    { title: "File system Linux: tutto quello che devi sapere", cat: "linux", level: "base", date: "2025-01" },
-    { title: "Introduzione al penetration testing", cat: "sec", level: "base", date: "2025-05" },
-    { title: "OSINT: raccogliere informazioni legalmente", cat: "sec", level: "intermedio", date: "2025-04" },
-    { title: "CTF writeup: buffer overflow 101", cat: "sec", level: "avanzato", date: "2025-03" },
-    { title: "Nmap: scansione reti in profondità", cat: "sec", level: "intermedio", date: "2025-02" },
-    { title: "Prompt engineering per sviluppatori", cat: "ai", level: "base", date: "2025-05" },
-    { title: "Automatizzare task con Python + AI", cat: "ai", level: "intermedio", date: "2025-04" },
-    { title: "LLM locali con Ollama: setup completo", cat: "ai", level: "intermedio", date: "2025-03" },
-    { title: "VPN self-hosted con WireGuard", cat: "cloud", level: "intermedio", date: "2025-05" },
-    { title: "AWS per chi inizia: i servizi fondamentali", cat: "cloud", level: "base", date: "2025-04" },
-    { title: "Docker da zero: container e immagini", cat: "dev", level: "base", date: "2025-05" },
-    { title: "Git workflow professionale", cat: "dev", level: "intermedio", date: "2025-04" },
-    { title: "Python: gestione errori avanzata", cat: "dev", level: "avanzato", date: "2025-03" },
-    { title: "REST API con FastAPI in 30 minuti", cat: "dev", level: "intermedio", date: "2025-02" },
+    { title: "Guida completa a Bash scripting", cat: "linux", level: "intermedio", date: "2026-05", url: "#" },
+    { title: "Come configurare un firewall con iptables", cat: "linux", level: "avanzato", date: "2026-04", url: "#" },
+    { title: "Cron job: automazione controllata su Linux", cat: "linux", level: "base", date: "2026-03", url: "#" },
+    { title: "SSH Hardening: blocco accessi non autorizzati", cat: "linux", level: "intermedio", date: "2026-02", url: "#" },
+    { title: "File system Linux: gerarchia FHS avanzata", cat: "linux", level: "base", date: "2026-01", url: "#" },
+    { title: "Introduzione al penetration testing e metodologie", cat: "security", level: "base", date: "2026-05", url: "#" },
+    { title: "OSINT: mappatura perimetrale e raccolta dati", cat: "security", level: "intermedio", date: "2026-04", url: "#" },
+    { title: "CTF writeup: vulnerabilità Buffer Overflow 101", cat: "security", level: "avanzato", date: "2026-03", url: "#" },
+    { title: "Nmap: tecniche di network scanning e scripting NSE", cat: "security", level: "intermedio", date: "2026-02", url: "#" },
+    { title: "Prompt Engineering strutturato per Sviluppatori", cat: "ai", level: "base", date: "2026-05", url: "#" },
+    { title: "Automatizzare pipeline logiche con Python + AI APIs", cat: "ai", level: "intermedio", date: "2026-04", url: "#" },
+    { title: "Deployment di LLM locali in sicurezza con Ollama", cat: "ai", level: "intermedio", date: "2026-03", url: "#" },
+    { title: "VPN Infrastrutturale self-hosted tramite WireGuard", cat: "cloud", level: "intermedio", date: "2026-05", url: "#" },
+    { title: "AWS Architecture Core: Identity (IAM) & Network (VPC)", cat: "cloud", level: "base", date: "2026-04", url: "#" },
+    { title: "Docker Containerization: architettura immagini isolata", cat: "dev", level: "base", date: "2026-05", url: "#" },
+    { title: "Git Workflow aziendale e gestione conflitti di merge", cat: "dev", level: "intermedio", date: "2026-04", url: "#" },
+    { title: "Python Avanzato: gestione eccezioni e logging asincrono", cat: "dev", level: "avanzato", date: "2026-03", url: "#" },
+    { title: "Sviluppo REST API asincrone ad alte prestazioni con FastAPI", cat: "dev", level: "intermedio", date: "2026-02", url: "#" },
   ];
 
-  const catColors = { linux: 'tag-green', sec: 'tag-red', ai: 'tag-blue', cloud: 'tag-blue', dev: 'tag-green' };
+  const catColors = { linux: 'tag-green', security: 'tag-red', ai: 'tag-blue', cloud: 'tag-blue', dev: 'tag-green' };
   const levelColors = { base: 'tag-green', intermedio: 'tag-blue', avanzato: 'tag-red' };
+
+  // Calculate and Render Counters Automatically
+  function updateCounters() {
+    const counts = { linux: 0, security: 0, ai: 0, cloud: 0, dev: 0 };
+    guides.forEach(g => { if(counts[g.cat] !== undefined) counts[g.cat]++; });
+    
+    document.getElementById('count-linux').innerText = `// ${counts.linux} guide`;
+    document.getElementById('count-security').innerText = `// ${counts.security} guide`;
+    document.getElementById('count-ai').innerText = `// ${counts.ai} guide`;
+    document.getElementById('count-cloud').innerText = `// ${counts.cloud} guide`;
+    document.getElementById('count-dev').innerText = `// ${counts.dev} guide`;
+    document.getElementById('count-all').innerText = `// ${guides.length} guide`;
+  }
 
   function renderGuides(filter) {
     const tbody = document.getElementById('guideBody');
     const filtered = filter === 'all' ? guides : guides.filter(g => g.cat === filter);
     tbody.innerHTML = filtered.map(g => `
       <tr>
-        <td>${g.title}</td>
+        <td><a href="${g.url}">${g.title}</a></td>
         <td><span class="tag ${catColors[g.cat]}">${g.cat}</span></td>
         <td><span class="tag ${levelColors[g.level]}">${g.level}</span></td>
-        <td>${g.date}</td>
+        <td style="text-align: right;">${g.date}</td>
       </tr>
     `).join('');
   }
@@ -836,10 +874,20 @@
   function filterGuide(cat, btn) {
     renderGuides(cat);
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+    
+    if (btn) {
+      btn.classList.add('active');
+    } else {
+      // If clicked from grid cards, highlight correct filter button
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        if(b.getAttribute('onclick').includes(`'${cat}'`)) b.classList.add('active');
+      });
+    }
     document.getElementById('guide-list').scrollIntoView({ behavior: 'smooth' });
   }
 
+  // Initialization
+  updateCounters();
   renderGuides('all');
 </script>
 </body>
