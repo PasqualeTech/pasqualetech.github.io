@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pastech — guide tech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --accent: #00ff88;
+    --accent2: #0af;
+    --accent3: #ff4f6d;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform .1s, width .2s, height .2s;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,255,136,.35);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform .15s ease, opacity .3s;
+  }
+  a:hover ~ .cursor, button:hover ~ .cursor { width: 20px; height: 20px; }
+
+  /* Grid noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,136,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 3rem;
+    background: rgba(10,10,15,.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: .05em;
+    text-decoration: none;
+  }
+  .logo span { color: var(--muted); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: .8rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: .75rem;
+    color: var(--accent);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag::before { content: '> '; color: var(--muted); }
+  h1 {
+    font-family: var(--sans);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 800;
+    line-height: .95;
+    letter-spacing: -.02em;
+    margin-bottom: 1.5rem;
+  }
+  h1 .line2 { color: var(--muted); }
+  h1 .accent-word { color: var(--accent); }
+
+  .hero-desc {
+    font-family: var(--mono);
+    font-size: .9rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+  .hero-desc .hl { color: var(--accent2); }
+
+  .cta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .8rem 1.8rem;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    background: transparent;
+    text-decoration: none;
+    cursor: none;
+    transition: background .2s, color .2s;
+  }
+  .btn:hover { background: var(--accent); color: var(--bg); }
+  .btn-ghost {
+    border-color: var(--border);
+    color: var(--muted);
+  }
+  .btn-ghost:hover { background: var(--surface); color: var(--text); }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem; left: 3rem;
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    letter-spacing: .1em;
+  }
+  .scroll-line {
+    width: 48px; height: 1px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    left: -100%; top: 0;
+    width: 100%; height: 100%;
+    background: var(--accent);
+    animation: scan 2s linear infinite;
+  }
+  @keyframes scan { to { left: 100%; } }
+
+  /* Social strip */
+  .social-strip {
+    position: absolute;
+    right: 3rem; top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 1;
+  }
+  .social-strip a {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--muted);
+    text-decoration: none;
+    writing-mode: vertical-rl;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+  .social-strip a:hover { color: var(--accent); }
+
+  /* Section base */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 3rem;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--accent);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .section-label::before { content: '// '; color: var(--muted); }
+  h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  /* About */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+  }
+  .about-text {
+    font-family: var(--mono);
+    font-size: .85rem;
+    line-height: 1.9;
+    color: var(--muted);
+  }
+  .about-text strong { color: var(--text); font-weight: 400; }
+  .stack-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .5rem;
+  }
+  .stack-item {
+    font-family: var(--mono);
+    font-size: .75rem;
+    padding: .6rem 1rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    transition: border-color .2s, color .2s;
+  }
+  .stack-item:hover { border-color: var(--accent); color: var(--accent); }
+  .stack-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green { background: var(--accent); }
+  .dot-blue { background: var(--accent2); }
+  .dot-red { background: var(--accent3); }
+
+  /* Guide topics */
+  #guide {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .topics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+  .topics-desc {
+    font-family: var(--mono);
+    font-size: .8rem;
+    color: var(--muted);
+    max-width: 300px;
+    text-align: right;
+    line-height: 1.6;
+  }
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .topic-card {
+    background: var(--surface);
+    padding: 2rem;
+    cursor: none;
+    transition: background .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width .3s;
+  }
+  .topic-card:hover { background: var(--bg); }
+  .topic-card:hover::after { width: 100%; }
+  .topic-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .topic-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    color: var(--text);
+  }
+  .topic-desc {
+    font-family: var(--mono);
+    font-size: .75rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .topic-count {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--accent);
+    margin-top: 1.2rem;
+  }
+
+  /* Guide list section */
+  #guide-list { border-bottom: 1px solid var(--border); }
+  .guide-filter {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: var(--mono);
+    font-size: .7rem;
+    padding: .4rem 1rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: none;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    transition: all .2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .guide-table { width: 100%; border-collapse: collapse; }
+  .guide-table thead tr {
+    border-bottom: 1px solid var(--border);
+  }
+  .guide-table th {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--muted);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .75rem 0;
+    text-align: left;
+    font-weight: 400;
+  }
+  .guide-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    cursor: none;
+    transition: background .15s;
+  }
+  .guide-table tbody tr:hover { background: var(--surface); }
+  .guide-table td {
+    padding: 1rem 0;
+    font-family: var(--mono);
+    font-size: .82rem;
+  }
+  .guide-table td:first-child { color: var(--text); }
+  .guide-table td:not(:first-child) { color: var(--muted); }
+  .guide-table td:last-child { text-align: right; }
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .65rem;
+    padding: .2rem .6rem;
+    border: 1px solid;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-left: .5rem;
+  }
+  .tag-green { border-color: var(--accent); color: var(--accent); }
+  .tag-blue { border-color: var(--accent2); color: var(--accent2); }
+  .tag-red { border-color: var(--accent3); color: var(--accent3); }
+
+  /* Socials section */
+  #social { background: var(--surface); border-top: 1px solid var(--border); }
+  .socials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  .social-card {
+    border: 1px solid var(--border);
+    padding: 1.75rem;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .2s;
+    cursor: none;
+  }
+  .social-card:hover { border-color: var(--accent); }
+  .social-card:hover .social-arrow { transform: translate(4px,-4px); }
+  .social-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: .25rem;
+    color: var(--text);
+  }
+  .social-handle {
+    font-family: var(--mono);
+    font-size: .75rem;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+  .social-desc {
+    font-family: var(--mono);
+    font-size: .75rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+  .social-arrow {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    font-size: 1.2rem;
+    color: var(--muted);
+    transition: transform .2s;
+  }
+  .social-platform-tag {
+    font-family: var(--mono);
+    font-size: .65rem;
+    color: var(--accent);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  /* Telegram CTA */
+  .tg-cta {
+    margin-top: 4rem;
+    border: 1px solid var(--accent2);
+    padding: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .tg-text h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: .5rem;
+  }
+  .tg-text p {
+    font-family: var(--mono);
+    font-size: .8rem;
+    color: var(--muted);
+  }
+  .btn-tg {
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .8rem 2rem;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    background: transparent;
+    text-decoration: none;
+    cursor: none;
+    white-space: nowrap;
+    transition: background .2s, color .2s;
+    flex-shrink: 0;
+  }
+  .btn-tg:hover { background: var(--accent2); color: var(--bg); }
+
+  /* Footer */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  footer .logo { font-size: .9rem; }
+  footer p {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--muted);
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-tag  { animation: fadeUp .6s .1s both; }
+  h1         { animation: fadeUp .6s .2s both; }
+  .hero-desc { animation: fadeUp .6s .3s both; }
+  .cta-row   { animation: fadeUp .6s .4s both; }
+
+  /* Blinking caret */
+  .caret {
+    display: inline-block;
+    width: 3px; height: 1em;
+    background: var(--accent);
+    vertical-align: middle;
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 3rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.5rem 4rem; }
+    .social-strip { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .topics-header { flex-direction: column; align-items: flex-start; }
+    .topics-desc { text-align: left; }
+    footer { padding: 2rem 1.5rem; }
+    .tg-cta { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Nav -->
+<nav>
+  <a class="logo" href="#"><span>_</span>pastech</a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#guide">guide</a></li>
+    <li><a href="#social">social</a></li>
+    <li><a href="https://t.me/pastech_bot" target="_blank">telegram</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="home">
+  <div class="hero-tag">init pastech.dev</div>
+  <h1>
+    tech<br>
+    <span class="line2">senza</span><br>
+    <span class="accent-word">filtri<span class="caret"></span></span>
+  </h1>
+  <p class="hero-desc">
+    Guide pratiche su <span class="hl">Linux</span>, <span class="hl">cybersecurity</span>,
+    <span class="hl">AI</span>, <span class="hl">cloud</span> e <span class="hl">dev</span>.
+    Contenuti diretti, senza fronzoli.
+  </p>
+  <div class="cta-row">
+    <a class="btn" href="#guide">sfoglia le guide</a>
+    <a class="btn btn-ghost" href="#social">seguimi</a>
+  </div>
+
+  <div class="social-strip">
+    <a href="https://instagram.com/_pastech_" target="_blank">instagram</a>
+    <a href="https://tiktok.com/@_pastech_" target="_blank">tiktok</a>
+    <a href="https://youtube.com" target="_blank">youtube</a>
+    <a href="https://linkedin.com" target="_blank">linkedin</a>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="section-label">chi sono</div>
+  <h2>pastech</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        Creo contenuti tech su <strong>Instagram, TikTok, YouTube e LinkedIn</strong>
+        con l'obiettivo di rendere accessibili argomenti complessi.<br><br>
+        Dalla configurazione di un server Linux alla comprensione dei
+        fondamenti della cybersecurity, passando per automazioni con
+        <strong>AI</strong> e architetture <strong>cloud/networking</strong>.<br><br>
+        Questo sito raccoglie tutte le guide scritte nel tempo —
+        una base di conoscenza aperta e sempre aggiornata.
+      </p>
+    </div>
+    <div>
+      <p style="font-family: var(--mono); font-size: .7rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem;">stack &amp; argomenti</p>
+      <div class="stack-grid">
+        <div class="stack-item"><span class="stack-dot dot-green"></span>Linux / bash</div>
+        <div class="stack-item"><span class="stack-dot dot-red"></span>cybersecurity</div>
+        <div class="stack-item"><span class="stack-dot dot-blue"></span>cloud / networking</div>
+        <div class="stack-item"><span class="stack-dot dot-green"></span>AI / automazione</div>
+        <div class="stack-item"><span class="stack-dot dot-blue"></span>programmazione</div>
+        <div class="stack-item"><span class="stack-dot dot-red"></span>CTF / hacking etico</div>
+        <div class="stack-item"><span class="stack-dot dot-green"></span>Docker / DevOps</div>
+        <div class="stack-item"><span class="stack-dot dot-blue"></span>Python / scripting</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Topic cards -->
+<section id="guide">
+  <div class="topics-header">
+    <div>
+      <div class="section-label">argomenti</div>
+      <h2>le categorie</h2>
+    </div>
+    <p class="topics-desc">Scegli una categoria per filtrare le guide qui sotto.</p>
+  </div>
+  <div class="topics-grid">
+    <div class="topic-card" onclick="filterGuide('linux')">
+      <div class="topic-icon">🐧</div>
+      <div class="topic-title">Linux & bash</div>
+      <div class="topic-desc">Comandi essenziali, scripting, gestione sistemi, configurazione server.</div>
+      <div class="topic-count">// 8 guide</div>
+    </div>
+    <div class="topic-card" onclick="filterGuide('sec')">
+      <div class="topic-icon">🔐</div>
+      <div class="topic-title">Cybersecurity</div>
+      <div class="topic-desc">Hacking etico, CTF writeup, penetration testing, OSINT, strumenti difensivi.</div>
+      <div class="topic-count">// 6 guide</div>
+    </div>
+    <div class="topic-card" onclick="filterGuide('ai')">
+      <div class="topic-icon">🤖</div>
+      <div class="topic-title">AI & automazione</div>
+      <div class="topic-desc">LLM, prompt engineering, script di automazione, workflow con AI.</div>
+      <div class="topic-count">// 5 guide</div>
+    </div>
+    <div class="topic-card" onclick="filterGuide('cloud')">
+      <div class="topic-icon">☁️</div>
+      <div class="topic-title">Cloud & networking</div>
+      <div class="topic-desc">AWS, VPN, firewall, reti, DNS, infrastruttura as code.</div>
+      <div class="topic-count">// 4 guide</div>
+    </div>
+    <div class="topic-card" onclick="filterGuide('dev')">
+      <div class="topic-icon">💻</div>
+      <div class="topic-title">Programmazione</div>
+      <div class="topic-desc">Python, Git, Docker, API, best practice di sviluppo.</div>
+      <div class="topic-count">// 7 guide</div>
+    </div>
+    <div class="topic-card" onclick="filterGuide('all')">
+      <div class="topic-icon">⚡</div>
+      <div class="topic-title">Tutte le guide</div>
+      <div class="topic-desc">Visualizza l'intera raccolta senza filtri.</div>
+      <div class="topic-count">// 30 guide</div>
+    </div>
+  </div>
+</section>
+
+<!-- Guide list -->
+<section id="guide-list">
+  <div class="section-label">archivio</div>
+  <h2>guide</h2>
+  <div style="margin-top: 2rem;">
+    <div class="guide-filter">
+      <button class="filter-btn active" onclick="filterGuide('all',this)">Tutto</button>
+      <button class="filter-btn" onclick="filterGuide('linux',this)">Linux</button>
+      <button class="filter-btn" onclick="filterGuide('sec',this)">Security</button>
+      <button class="filter-btn" onclick="filterGuide('ai',this)">AI</button>
+      <button class="filter-btn" onclick="filterGuide('cloud',this)">Cloud</button>
+      <button class="filter-btn" onclick="filterGuide('dev',this)">Dev</button>
+    </div>
+    <table class="guide-table">
+      <thead>
+        <tr>
+          <th>titolo</th>
+          <th style="width:120px">categoria</th>
+          <th style="width:120px">livello</th>
+          <th style="width:100px">data</th>
+        </tr>
+      </thead>
+      <tbody id="guideBody">
+        <!-- JS populated -->
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Social & Telegram -->
+<section id="social">
+  <div class="section-label">canali</div>
+  <h2>seguimi</h2>
+  <div class="socials-grid">
+    <a class="social-card" href="https://instagram.com/_pastech_" target="_blank">
+      <span class="social-arrow">↗</span>
+      <div class="social-name">Instagram</div>
+      <div class="social-handle">@_pastech_</div>
+      <div class="social-desc">Reel tecnici brevi, tips, concept spiegati in 60 secondi.</div>
+      <div class="social-platform-tag">instagram</div>
+    </a>
+    <a class="social-card" href="https://tiktok.com/@_pastech_" target="_blank">
+      <span class="social-arrow">↗</span>
+      <div class="social-name">TikTok</div>
+      <div class="social-handle">@_pastech_</div>
+      <div class="social-desc">Format veloci, tendenze tech, challenge e curiosità informatiche.</div>
+      <div class="social-platform-tag">tiktok</div>
+    </a>
+    <a class="social-card" href="https://youtube.com" target="_blank">
+      <span class="social-arrow">↗</span>
+      <div class="social-name">YouTube</div>
+      <div class="social-handle">pastech</div>
+      <div class="social-desc">Tutorial completi, walkthrough CTF, video approfonditi.</div>
+      <div class="social-platform-tag">youtube</div>
+    </a>
+    <a class="social-card" href="https://linkedin.com" target="_blank">
+      <span class="social-arrow">↗</span>
+      <div class="social-name">LinkedIn</div>
+      <div class="social-handle">pastech</div>
+      <div class="social-desc">Riflessioni sul mondo tech, carriera IT, trend del settore.</div>
+      <div class="social-platform-tag">linkedin</div>
+    </a>
+  </div>
+
+  <div class="tg-cta">
+    <div class="tg-text">
+      <h3>Bot Telegram 🤖</h3>
+      <p>Sfoglia tutte le guide direttamente su Telegram.<br>Cerca per categoria, livello o parola chiave.</p>
+    </div>
+    <a class="btn-tg" href="https://t.me/pastech_bot" target="_blank">apri il bot →</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <a class="logo" href="#"><span>_</span>pastech</a>
+  <p>© 2025 pastech — built with GitHub Pages</p>
+  <p style="font-family: var(--mono); font-size: .7rem; color: var(--muted);">
+    <a href="https://github.com/pastech" target="_blank" style="color: var(--muted); text-decoration: none; transition: color .2s;" onmouseover="this.style.color='#00ff88'" onmouseout="this.style.color='var(--muted)'">github</a>
+  </p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+    rx += (mx - rx) * .12;
+    ry += (my - ry) * .12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // Guide data
+  const guides = [
+    { title: "Guida completa a Bash scripting", cat: "linux", level: "intermedio", date: "2025-05" },
+    { title: "Come configurare un firewall con iptables", cat: "linux", level: "avanzato", date: "2025-04" },
+    { title: "Cron job: automazione su Linux", cat: "linux", level: "base", date: "2025-03" },
+    { title: "SSH hardening: guida pratica", cat: "linux", level: "intermedio", date: "2025-02" },
+    { title: "File system Linux: tutto quello che devi sapere", cat: "linux", level: "base", date: "2025-01" },
+    { title: "Introduzione al penetration testing", cat: "sec", level: "base", date: "2025-05" },
+    { title: "OSINT: raccogliere informazioni legalmente", cat: "sec", level: "intermedio", date: "2025-04" },
+    { title: "CTF writeup: buffer overflow 101", cat: "sec", level: "avanzato", date: "2025-03" },
+    { title: "Nmap: scansione reti in profondità", cat: "sec", level: "intermedio", date: "2025-02" },
+    { title: "Prompt engineering per sviluppatori", cat: "ai", level: "base", date: "2025-05" },
+    { title: "Automatizzare task con Python + AI", cat: "ai", level: "intermedio", date: "2025-04" },
+    { title: "LLM locali con Ollama: setup completo", cat: "ai", level: "intermedio", date: "2025-03" },
+    { title: "VPN self-hosted con WireGuard", cat: "cloud", level: "intermedio", date: "2025-05" },
+    { title: "AWS per chi inizia: i servizi fondamentali", cat: "cloud", level: "base", date: "2025-04" },
+    { title: "Docker da zero: container e immagini", cat: "dev", level: "base", date: "2025-05" },
+    { title: "Git workflow professionale", cat: "dev", level: "intermedio", date: "2025-04" },
+    { title: "Python: gestione errori avanzata", cat: "dev", level: "avanzato", date: "2025-03" },
+    { title: "REST API con FastAPI in 30 minuti", cat: "dev", level: "intermedio", date: "2025-02" },
+  ];
+
+  const catColors = { linux: 'tag-green', sec: 'tag-red', ai: 'tag-blue', cloud: 'tag-blue', dev: 'tag-green' };
+  const levelColors = { base: 'tag-green', intermedio: 'tag-blue', avanzato: 'tag-red' };
+
+  function renderGuides(filter) {
+    const tbody = document.getElementById('guideBody');
+    const filtered = filter === 'all' ? guides : guides.filter(g => g.cat === filter);
+    tbody.innerHTML = filtered.map(g => `
+      <tr>
+        <td>${g.title}</td>
+        <td><span class="tag ${catColors[g.cat]}">${g.cat}</span></td>
+        <td><span class="tag ${levelColors[g.level]}">${g.level}</span></td>
+        <td>${g.date}</td>
+      </tr>
+    `).join('');
+  }
+
+  function filterGuide(cat, btn) {
+    renderGuides(cat);
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.getElementById('guide-list').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  renderGuides('all');
+</script>
+</body>
+</html>
